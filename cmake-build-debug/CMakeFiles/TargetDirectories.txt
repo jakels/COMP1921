@@ -1,0 +1,3 @@
+C:/Users/jakes/Documents/Repository/COMP1921/cmake-build-debug/CMakeFiles/COMP1921.dir
+C:/Users/jakes/Documents/Repository/COMP1921/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/jakes/Documents/Repository/COMP1921/cmake-build-debug/CMakeFiles/rebuild_cache.dir
