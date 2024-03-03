@@ -50,6 +50,9 @@ MAZE* LoadMaze (const FILE *mazeFileObject);
 int GameplayLoop(const MAZE *mazeStruct);
 int GameplayStep(MAZE *mazeStruct);
 int DisplayMaze (const MAZE *mazeStruct);
+int ProcessPlayerActions();
+int CheckForWinCondition();
+int DisplayWinMessage();
 
 // ----Global Variables---------------------------------------
 MAZE *currentMaze = NULL;
@@ -74,6 +77,14 @@ int main() // main() function will hold the main execution line of our game
     if(mazeFileObject == NULL)
     {
         perror("Failed to load maze file object!");
+        return 1;
+    }
+
+    // Check if maze is of a valid configuration
+    int mazeIsValid = MazeIsValid(mazeFileObject);
+    if(mazeIsValid == 1)
+    {
+        perror("Maze is not of a valid configuration!");
         return 1;
     }
 
@@ -105,16 +116,51 @@ int GameplayLoop(const MAZE *mazeStruct)
         gameActive = GameplayStep(mazeStruct);
     }
 
+    DisplayWinMessage();
+
+    return 0;
+}
+
+int DisplayWinMessage()
+{
+    // TODO: Show a win message
     return 0;
 }
 
 int GameplayStep(MAZE *mazeStruct)
 {
-    // TODO: Implement gameplay step logic of taking user input for movement and displaying the map and then processing these
-    return 1;
+    // Process player movement & map display
+    ProcessPlayerActions();
+
+    // Check if player has met a win condition
+    int hasWon = CheckForWinCondition();
+
+    return hasWon;
+}
+
+int ProcessPlayerActions()
+{
+    // TODO: Implement the process of accepting user input and then changing the player position if possible
+    return 0;
+}
+
+int CheckForWinCondition()
+{
+    // TODO: Implement the process of checking for a win condition i.e. player meets end of maze
+    return 0;
 }
 
 // ----Maze Functions-----------------------------------------
+int MazeIsValid(const FILE *mazeFileObject)
+{
+    // TODO: Check if a provided maze is valid:
+    /* 
+     *
+     *
+     */
+    return 0;
+}
+
 MAZE* LoadMaze (const FILE *mazeFileObject) // Loads the maze data into a maze struct from our maze file object
 {
     // TODO: Load maze into struct
