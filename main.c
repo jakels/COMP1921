@@ -45,52 +45,54 @@ typedef struct { // Loaded maze struct
 } MAZE;
 
 // ----Function Declarations----------------------------------
-FILE* OpenFile (const char *filename);
+FILE* OpenFile (const char filename);
 MAZE* LoadMaze (const FILE *mazeFileObject);
 int GameplayLoop(const MAZE *mazeStruct);
 int GameplayStep(MAZE *mazeStruct);
 int DisplayMaze (const MAZE *mazeStruct);
-int ProcessPlayerActions();
-int CheckForWinCondition();
+int MazeIsValid(const FILE *mazeFileObject);
+int ProcessPlayerActions(const MAZE *mazeStruct);
+int CheckForWinCondition(MAZE *mazeStruct);
 int DisplayWinMessage();
 
-// ----Global Variables---------------------------------------
-MAZE *currentMaze = NULL;
-
 // ----Functions----------------------------------------------
-int main() // main() function will hold the main execution line of our game
+int main( int argc, char *argv[] ) // main() function will hold the main execution line of our game, we will also take in the command line arguments for the maze file
 {
-    // Greeting message
-    printf("--COMP 1921: Maze Game Coursework 1-----------\n");
+    // Check our CL arguments are valid
+    if(argc > 2) // The first CL argument is the application name
+    {
+        perror("Too many arguments! (expected 1)");
+        return 1;
+    }
+
+    if(argc < 2) // The first CL argument is the application name
+    {
+        perror("Too few arguments! (expected 1)");
+        return 1;
+    }
 
     // Declare array to store user provided maze filename in
-    char mazeFilename[100];
-
-    // Prompt the user to enter the filename
-    printf("Enter the filename of the maze you wish to load: ");
-
-    // Get the user's input
-    scanf("%99s", mazeFilename);
+    char mazeFilename = *argv[1];
 
     // Load the requested maze data file into a file object
     FILE *mazeFileObject = OpenFile(mazeFilename);
-    if(mazeFileObject == NULL)
+    if(mazeFileObject == NULL) // Will equal to null if we failed to open the file
     {
-        perror("Failed to load maze file object!");
+        perror("Failed to open maze file!");
         return 1;
     }
 
     // Check if maze is of a valid configuration
     int mazeIsValid = MazeIsValid(mazeFileObject);
-    if(mazeIsValid == 1)
+    if(mazeIsValid == 1) // 0 = valid, 1 = invalid
     {
         perror("Maze is not of a valid configuration!");
         return 1;
     }
 
-    // Set the current maze variable to our newly loaded maze
+    // Load our maze into a maze struct for use in our gameplay functions
     MAZE *loadedMazeResult = LoadMaze(mazeFileObject);
-    if(loadedMazeResult == NULL)
+    if(loadedMazeResult == NULL) // Will equal to null if we failed to compile maze into a MAZE struct
     {
         perror("Failed to load maze into a struct!");
         return 1;
@@ -102,7 +104,7 @@ int main() // main() function will hold the main execution line of our game
     // Start the gameplay loop and accepting user input
     GameplayLoop(loadedMazeResult);
 
-    return 0;
+    return 0; // Return success on game finished
 }
 
 // ----Gameplay Functions-------------------------------------
@@ -130,21 +132,51 @@ int DisplayWinMessage()
 int GameplayStep(MAZE *mazeStruct)
 {
     // Process player movement & map display
-    ProcessPlayerActions();
+    ProcessPlayerActions(mazeStruct);
 
     // Check if player has met a win condition
-    int hasWon = CheckForWinCondition();
+    int hasWon = CheckForWinCondition(mazeStruct);
 
     return hasWon;
 }
 
-int ProcessPlayerActions()
+int ProcessPlayerActions(const MAZE *mazeStruct)
 {
     // TODO: Implement the process of accepting user input and then changing the player position if possible
+
+    // W - UP, A - LEFT, S - DOWN, D - RIGHT, M - SHOW MAP
+    char option;
+    printf("Enter one of the following options: W, A, S, D, or X: ");
+    scanf(" %c", &option);
+
+    switch (option) {
+        case 'W':
+        case 'w':
+            // Try to move up
+            break;
+        case 'A':
+        case 'a':
+            // Try to move left
+            break;
+        case 'S':
+        case 's':
+            // Try to move down
+            break;
+        case 'D':
+        case 'd':
+            // Try to move right
+            break;
+        case 'X':
+        case 'x':
+            DisplayMaze(mazeStruct);
+            break;
+        default:
+            printf("Please choose an option that is either W/A/S/D or X!\n");
+    }
     return 0;
 }
 
-int CheckForWinCondition()
+int CheckForWinCondition(MAZE *mazeStruct)
 {
     // TODO: Implement the process of checking for a win condition i.e. player meets end of maze
     return 0;
@@ -154,9 +186,10 @@ int CheckForWinCondition()
 int MazeIsValid(const FILE *mazeFileObject)
 {
     // TODO: Check if a provided maze is valid:
-    /* 
-     *
-     *
+    /* Maze must be less than or equal to a size of 100x100
+     * Maze must be greater than or equal to a size of 5x5
+     * Maze rows should be uniform, maze columns should be uniform
+     * Maze should contain an S character
      */
     return 0;
 }
@@ -165,6 +198,7 @@ MAZE* LoadMaze (const FILE *mazeFileObject) // Loads the maze data into a maze s
 {
     // TODO: Load maze into struct
     MAZE *newMaze;
+    // Struct construction here...
     return newMaze;
 }
 
@@ -175,9 +209,9 @@ int DisplayMaze (const MAZE *mazeStruct)
 }
 
 // ----Utility Functions--------------------------------------
-FILE* OpenFile (const char *filename) // Takes a file name and returns a file object for that filename
+FILE* OpenFile (const char filename) // Takes a file name and returns a file object for that filename
 {
-    FILE *fileObject = fopen(filename, "r"); // Open filename in read mode
+    FILE *fileObject = fopen(&filename, "r"); // Open filename in read mode
 
     if (fileObject == NULL)
     {
