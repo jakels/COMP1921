@@ -201,6 +201,7 @@ int MazeIsValid(const FILE *mazeFileObject)
      * Maze must be greater than or equal to a size of 5x5
      * Maze rows should be uniform, maze columns should be uniform
      * Maze should contain an S character
+     * Maze should only contain one S character
      */
     return 0;
 }
