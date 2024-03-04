@@ -32,6 +32,7 @@
 
 // ----Libraries----------------------------------------------
 #include <stdio.h>
+#include <string.h>
 
 // ----Struct Declarations------------------------------------
 typedef struct { // Player character struct
@@ -45,7 +46,7 @@ typedef struct { // Loaded maze struct
 } MAZE;
 
 // ----Function Declarations----------------------------------
-FILE* OpenFile (const char filename);
+FILE* OpenFile (const char* filename);
 MAZE* LoadMaze (const FILE *mazeFileObject);
 int GameplayLoop(const MAZE *mazeStruct);
 int GameplayStep(MAZE *mazeStruct);
@@ -59,20 +60,23 @@ int DisplayWinMessage();
 int main( int argc, char *argv[] ) // main() function will hold the main execution line of our game, we will also take in the command line arguments for the maze file
 {
     // Check our CL arguments are valid
-    if(argc > 2) // The first CL argument is the application name
+    if(argc > 3) // The first CL argument is the application name
     {
-        perror("Too many arguments! (expected 1)");
+        perror("Too many arguments! (expected 2)");
         return 1;
     }
 
-    if(argc < 2) // The first CL argument is the application name
+    if(argc < 3) // The first CL argument is the application name
     {
-        perror("Too few arguments! (expected 1)");
+        perror("Too few arguments! (expected 2)");
         return 1;
     }
 
     // Declare array to store user provided maze filename in
-    char mazeFilename = *argv[1];
+    char* mazeFilename = argv[1];
+
+    // Declare array to store user provided debug setting for maze loading
+    char* debugMazeLoading = argv[2]; // If this = "true" then halt execution after maze loading
 
     // Load the requested maze data file into a file object
     FILE *mazeFileObject = OpenFile(mazeFilename);
@@ -96,6 +100,13 @@ int main( int argc, char *argv[] ) // main() function will hold the main executi
     {
         perror("Failed to load maze into a struct!");
         return 1;
+    }
+
+    // Halt execution if we are in debug maze mode
+    if(strcmp(debugMazeLoading, "true") == 0)
+    {
+        printf("Halted execution as application is in debug maze mode");
+        return 0;
     }
 
     // Before starting gameplay loop and getting user input show the maze in its initial configuration
@@ -209,9 +220,9 @@ int DisplayMaze (const MAZE *mazeStruct)
 }
 
 // ----Utility Functions--------------------------------------
-FILE* OpenFile (const char filename) // Takes a file name and returns a file object for that filename
+FILE* OpenFile (const char* filename) // Takes a file name and returns a file object for that filename
 {
-    FILE *fileObject = fopen(&filename, "r"); // Open filename in read mode
+    FILE *fileObject = fopen(filename, "r"); // Open filename in read mode
 
     if (fileObject == NULL)
     {
