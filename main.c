@@ -105,7 +105,7 @@ int main( int argc, char *argv[] ) // main() function will hold the main executi
     // Halt execution if we are in debug maze mode
     if(strcmp(debugMazeLoading, "true") == 0)
     {
-        printf("Halted execution as application is in debug maze mode");
+        printf("Maze loaded successfully");
         return 0;
     }
 
